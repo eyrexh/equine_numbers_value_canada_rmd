@@ -1,11 +1,17 @@
 ---
 title: "Historical horse population in Canada"
-output: github_document
+output: html_document:
+  toc: TRUE
+bibliography: references.bib
+params:
+  province: "British Columbia"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
+library(knitr)
+library(kableExtra)
 ```
 
 ## Aim
@@ -48,13 +54,13 @@ horse_plot <- ggplot(horse_pop, aes(x = Ref_Date, y = Value)) +
 horse_plot
 ```
 
-We can see from the visualisation above that Ontario, Saskatchewan and Alberta have had the highest horse populations in Canada. All provinces have had a decline in horse
-populations since 1940. This is likely due to the rebound of the Canadian automotive
-industry after the Great Depression and the Second World War. An interesting follow-up visualization would be car sales per year for each Province over the time period visualised above to further support this hypothesis. 
+pokemon [@pikachu]
 
-Next we look at the range of the number horses for each provinces at any time point between 1940 - 1972:
+We can see from the visualisation above that Ontario, Saskatchewan and Alberta have had the highest horse populations in Canada. All provinces have had a decline in horse populations since 1940. This is likely due to the rebound of the Canadian automotive industry after the Great Depression and the Second World War. An interesting follow-up visualization would be car sales per year for each Province over the time period visualised above to further support this hypothesis.
 
-```{r max horse table}
+Next we look at the range of the number horses for each provinces at any time point between `r min(horse_pop$Ref_Date)` - `r max(horse_pop$Ref_Date)`:
+
+```{r max horse table, message=FALSE, warning=FALSE}
 max_horses <- horse_pop %>% 
   select(GEO, Value) %>% 
   rename(Province = GEO) %>% 
@@ -62,13 +68,15 @@ max_horses <- horse_pop %>%
   summarize(Maximum = max(Value),
             Minimum = min(Value))
 max_horses
+knitr::kable(max_horses, caption="Table 1. Horse population in Canada table") |> 
+    kableExtra::kable_styling(full_width = FALSE)
 ```
 
 Below we zoom in and look at the province of Alberta:
 
-```{r plot province, fig.width=5, fig.height=4}
+```{r plot province, fig.align='centre', fig.cap="Figure 2. Provnices", fig.height=4, fig.width=5, message=FALSE, warning=FALSE}
 province_plot <- horse_pop %>% 
-  filter(GEO == "Alberta") %>% 
+  filter(GEO == params$province) %>% 
   ggplot(aes(x = Ref_Date, y = Value)) +
   geom_point() +
   geom_line() +
@@ -78,5 +86,17 @@ province_plot <- horse_pop %>%
   facet_grid(~GEO) +
   scale_y_continuous(labels = scales::comma) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggsave("province_plot.png")
 province_plot
 ```
+
+
+```{r out.height="600px", out.widht='75px"'}
+knitr::include_graphics("province_plot.png")
+```
+
+@tidy
+
+## References
+
