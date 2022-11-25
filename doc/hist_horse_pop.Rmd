@@ -1,7 +1,8 @@
 ---
 title: "Historical horse population in Canada"
-output: html_document:
-  toc: TRUE
+output: 
+  html_document:
+    toc: TRUE
 bibliography: references.bib
 params:
   province: "British Columbia"
